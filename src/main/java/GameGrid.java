@@ -10,6 +10,13 @@ public class GameGrid extends Drawable{
         super(1,1);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        for(int i =0; i < sizeX; i++){
+            var row = new ArrayList<GridSquare>();
+            for(int j = 0; j < sizeY; j++){
+                row.add(new GridSquare(i, j));
+            }
+            contents.add(row);
+        }
     }
 
     public GridSquare getSquare(int x, int y){
@@ -25,4 +32,6 @@ public class GameGrid extends Drawable{
     public int getSizeY() {
         return sizeY;
     }
+
+
 }

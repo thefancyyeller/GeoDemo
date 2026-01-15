@@ -1,8 +1,9 @@
-import java.awt.image.BufferedImage;
+import javafx.scene.image.Image;
+
 
 public class Drawable{
     public Vector2F transform = new Vector2F(0,0);
-    private BufferedImage sprite;
+    private Image sprite;
     private String spritePath;
 
     public Drawable(float x, float y){
