@@ -23,6 +23,7 @@ public class Launcher extends Application {
         canvas.heightProperty().bind(root.heightProperty());
         root.getChildren().add(canvas);
 
+        // Initialize the game
         var state = new WorldState();
         var renderer = new Renderer(state);
         new AnimationTimer() {
@@ -31,6 +32,9 @@ public class Launcher extends Application {
                 renderer.update(canvas);
             }
         }.start();
+        var player = new Player();
+        state.grid.getSquare(0,0).addChild(player);
+        state.player = player;
 
         // Add scroll wheel handler
         canvas.setOnScroll(event -> {

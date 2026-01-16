@@ -1,7 +1,8 @@
-import java.awt.image.BufferedImage;
-import java.util.Optional;
+import javafx.scene.image.Image;
 
 // Represents something that exists on a grid tile
 public class GridItem {
-    public BufferedImage sprite = null;
+    public Image sprite = null;
+    public GridSquare parent = null;
+
 }

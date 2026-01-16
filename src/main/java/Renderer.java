@@ -43,6 +43,18 @@ public class Renderer {
                             state.tileSize* state.cameraZoom
                     );
                 }
+                // Render all children of the tile
+                for(var child : g.children){
+                    if(child.sprite != null){
+                        gc.drawImage(
+                                child.sprite,
+                                screenPos.x,
+                                screenPos.y,
+                                state.tileSize * state.cameraZoom,
+                                state.tileSize* state.cameraZoom
+                        );
+                    }
+                }
             }
         }
     }
