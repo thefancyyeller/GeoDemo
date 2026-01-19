@@ -1,8 +1,6 @@
 public class Player extends Entity{
 
     public Player(){
-        super("Warrior.png");
+        super("Warrior.png", "Player Character");
     }
-
-
 }

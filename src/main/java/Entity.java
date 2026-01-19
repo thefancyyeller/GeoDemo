@@ -8,8 +8,9 @@ public class Entity extends GridItem {
     public final ArrayList<Tag> tags = new ArrayList<>();
     public int currentEnergy = 0;
     public int energyForTurn = 50;
+    public String name;
 
-    public Entity(String spritePath){
+    public Entity(String spritePath, String name){
         super();
         this.sprite = new Image(spritePath);
     }

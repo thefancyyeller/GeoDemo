@@ -1,6 +1,7 @@
 import javafx.scene.canvas.Canvas;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class InputHandler {
     private Canvas canvas;
@@ -19,7 +20,14 @@ public class InputHandler {
         });
     }
 
+    // Returns the first (highest layered) ui component at a target
     private UIElement getAtLocation(Vector2I canvasLocation){
+        renderer.uiElements.sort(new Comparator<UIElement>() {
+            @Override
+            public int compare(UIElement o1, UIElement o2) {
+                return o1.layer - o2.layer;
+            }
+        });
         for(var elm : renderer.uiElements){
             if(canvasLocation.x >= (elm.x) && canvasLocation.x <= (elm.x + elm.width)){
                 if(canvasLocation.y >= (elm.y) && canvasLocation.y <= (elm.y + elm.height)){

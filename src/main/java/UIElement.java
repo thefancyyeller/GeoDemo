@@ -19,4 +19,8 @@ public abstract class UIElement {
     public void onClick(Vector2I relativeClickLocation){
         return;
     }
+
+    public interface GeoScrollListener{
+        public abstract void onScroll();
+    }
 }
