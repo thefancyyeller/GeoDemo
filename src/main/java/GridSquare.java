@@ -40,4 +40,11 @@ public class GridSquare {
         if(item instanceof Entity)
             assert(this.parent.state.entities.add((Entity) item));
     }
+
+    public Vector2F gameWorldCoords(){
+        var out = this.parent.transform.clone();
+        out.x += this.x * parent.state.tileSize;
+        out.y += this.y * parent.state.tileSize;
+        return out;
+    }
 }

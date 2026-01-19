@@ -9,12 +9,4 @@ public class WorldState {
     public int tileSize = 25;
     protected ArrayList<Entity> entities = new ArrayList<>();
     public Entity player;
-
-    public Vector2F worldToCanvas(Vector2F worldVec){
-        var out = worldVec.clone();
-        out.x -= cameraPos.x;
-        out.y -= cameraPos.y;
-        out = out.scaled(cameraZoom);
-        return out;
-    }
 }

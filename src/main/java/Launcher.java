@@ -25,11 +25,11 @@ public class Launcher extends Application {
 
         // Initialize the game
         var state = new WorldState();
-        var renderer = new Renderer(state);
+        var renderer = new Renderer(state, canvas);
         new AnimationTimer() {
             @Override
             public void handle(long l) {
-                renderer.update(canvas);
+                renderer.update();
             }
         }.start();
         var player = new Player();
@@ -43,8 +43,20 @@ public class Launcher extends Application {
             state.cameraZoom += zoomModifier;
             if(state.cameraZoom <= 0)
                 state.cameraZoom = 0.1f;
-            renderer.update(canvas);
+            renderer.update();
         });
+
+        new AnimationTimer(){
+
+            @Override
+            public void handle(long l) {
+                var old = player.parent.getCoords();
+                player.parent.removeChild(player);
+                old.set(1, old.get(1) + 1);
+                if(old.get(1) < state.grid.getSizeY())
+                    state.grid.getSquare(old.get(0), old.get(1)).addChild(player);
+            }
+        }.start();
 
     }
 
