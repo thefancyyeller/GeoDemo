@@ -1,4 +1,5 @@
-import java.awt.image.BufferedImage;
+package Geonauts;
+
 import java.util.ArrayList;
 
 public class GameGrid extends Drawable{

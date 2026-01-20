@@ -1,3 +1,6 @@
+package Geonauts;
+
+import Items.PoisonSword;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -32,9 +35,13 @@ public class Launcher extends Application {
                 renderer.update();
             }
         }.start();
+        // Spawn a player
         var player = new Player();
         state.grid.getSquare(0,0).addChild(player);
         state.player = player;
+        var square = state.grid.getSquare(0, 1);
+        state.grid.getSquare(0, 1).addChild(new PoisonSword());
+        System.out.println("Here");
 
         // Add scroll wheel handler
         canvas.setOnScroll(event -> {
@@ -45,18 +52,6 @@ public class Launcher extends Application {
                 state.cameraZoom = 0.1f;
             renderer.update();
         });
-
-        new AnimationTimer(){
-
-            @Override
-            public void handle(long l) {
-                var old = player.parent.getCoords();
-                player.parent.removeChild(player);
-                old.set(1, old.get(1) + 1);
-                if(old.get(1) < state.grid.getSizeY())
-                    state.grid.getSquare(old.get(0), old.get(1)).addChild(player);
-            }
-        }.start();
 
     }
 

@@ -1,3 +1,5 @@
+package Geonauts;
+
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -52,7 +54,7 @@ public class Renderer {
                     );
                 }
                 // Render all children of the tile
-                for(var child : g.children){
+                for(GridItem child : g.children){
                     if(child.sprite != null){
                         gc.drawImage(
                                 child.sprite,

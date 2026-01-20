@@ -1,6 +1,7 @@
+package Geonauts;
+
 import javafx.scene.canvas.Canvas;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class InputHandler {

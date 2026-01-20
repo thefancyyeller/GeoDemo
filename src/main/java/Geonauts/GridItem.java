@@ -1,3 +1,5 @@
+package Geonauts;
+
 import javafx.scene.image.Image;
 
 // Represents something that exists on a grid tile

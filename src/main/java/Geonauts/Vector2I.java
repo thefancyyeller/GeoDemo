@@ -1,3 +1,5 @@
+package Geonauts;
+
 public class Vector2I {
     public int x,y;
 

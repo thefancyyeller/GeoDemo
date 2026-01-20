@@ -1,7 +1,4 @@
-import javafx.scene.canvas.Canvas;
-
-import javax.swing.*;
-import java.util.ArrayList;
+package Geonauts;
 
 public abstract class UIElement {
     public int x,y,layer,height,width;

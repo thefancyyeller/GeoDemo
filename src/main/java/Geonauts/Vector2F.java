@@ -1,3 +1,5 @@
+package Geonauts;
+
 public class Vector2F implements Cloneable {
     float x;
     float y;

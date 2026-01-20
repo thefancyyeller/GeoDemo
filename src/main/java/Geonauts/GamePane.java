@@ -1,3 +1,5 @@
+package Geonauts;
+
 // This is the UI element associated with the actual gameplay
 public class GamePane extends UIElement{
 
