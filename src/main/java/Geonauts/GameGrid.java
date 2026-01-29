@@ -23,8 +23,8 @@ public class GameGrid extends Drawable{
     }
 
     public GridSquare getSquare(int x, int y){
-        assert(x < sizeX);
-        assert(y < sizeY);
+        if(x < sizeX || y < sizeY)
+            return null;
         return contents.get(x).get(y);
     }
 
@@ -34,6 +34,18 @@ public class GameGrid extends Drawable{
 
     public int getSizeY() {
         return sizeY;
+    }
+
+    public boolean move(Entity entity, int x, int y){
+        var target = getSquare(x, y);
+        if(target == null)
+            return false;
+        if(target.canEnter(entity)){
+            entity.parent.removeChild(entity);
+            target.addChild(entity);
+            return true;
+        }
+        return false;
     }
 
 

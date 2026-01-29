@@ -1,9 +1,8 @@
 package Geonauts;
 
 import javafx.scene.image.Image;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import java.util.*;
 
 public class GridSquare {
     public Image background = new Image("./Path.png");
@@ -18,6 +17,7 @@ public class GridSquare {
         this.x = x;
         this.y = y;
         this.parent = parent;
+        this.tags.add(Tag.Walkable);
     }
 
     public enum Tag{
@@ -48,5 +48,14 @@ public class GridSquare {
         out.x += this.x * parent.state.tileSize;
         out.y += this.y * parent.state.tileSize;
         return out;
+    }
+
+    public boolean canEnter(Entity e){
+        // Only one entity per square
+        for(var c : this.children){
+            if(c instanceof Entity)
+                return false;
+        }
+        return this.tags.contains(Tag.Walkable);
     }
 }

@@ -1,6 +1,9 @@
 package Geonauts;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+
+import java.awt.event.KeyEvent;
 
 public abstract class UIElement {
     public int x,y,layer,height,width;
@@ -28,5 +31,8 @@ public abstract class UIElement {
     }
     public interface GeoClickListener{
         public abstract void onClick(Vector2I relPixelCoords);
+    }
+    public interface GeoKeyLisener{
+        public abstract void onKeyPress(KeyCode keyCode); // Called when key is physically pressed
     }
 }

@@ -67,6 +67,19 @@ public class GamePane extends UIElement{
         gc.restore();
     }
 
+    public Vector2F paneToWorld(Vector2F relCoord) {
+        var out = relCoord.clone();
+        // Undo pane center offset (relative, so no need to subtract x/y)
+        out.x -= width / 2f;
+        out.y -= height / 2f;
+        // Undo zoom
+        out = out.scaled(1 / state.cameraZoom);
+        // Undo camera offset
+        out.x += state.cameraPos.x;
+        out.y += state.cameraPos.y;
+        return out;
+    }
+
     private Vector2F worldToPane(Vector2F worldCoord) {
         var out = worldCoord.clone();
         out.x -= state.cameraPos.x;
