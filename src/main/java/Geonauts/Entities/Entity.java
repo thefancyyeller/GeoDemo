@@ -1,5 +1,6 @@
-package Geonauts;
+package Geonauts.Entities;
 
+import Geonauts.GridItem;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
@@ -19,14 +20,15 @@ public class Entity extends GridItem {
 
     public void gainEnergy(){
         currentEnergy++;
-        if(energyForTurn == currentEnergy){
-            currentEnergy = 0;
-            onTurn();
+        if(currentEnergy >= energyForTurn){
+            if(onTurn()){
+                currentEnergy = 0;
+            }
         }
     }
 
-    public void onTurn(){
-        return;
+    public boolean onTurn(){
+        return true;
     }
 
     public enum Tag{

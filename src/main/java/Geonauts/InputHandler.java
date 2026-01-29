@@ -1,6 +1,7 @@
 package Geonauts;
 
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 
 import java.util.ArrayList;
@@ -32,6 +33,16 @@ public class InputHandler {
                     ((UIElement.GeoScrollListener) elm).onScroll(event.getDeltaY());
                     event.consume();
                     return;
+                }
+            }
+        });
+
+        // Dispatch key presses to UI components that listen for keys
+        canvas.setFocusTraversable(true);
+        canvas.setOnKeyPressed(e -> {
+            for (var elm : renderer.uiElements) {
+                if (elm instanceof UIElement.GeoKeyLisener) {
+                    ((UIElement.GeoKeyLisener) elm).onKeyPress(e.getCode());
                 }
             }
         });

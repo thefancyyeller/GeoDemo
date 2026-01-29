@@ -1,5 +1,6 @@
 package Geonauts;
 
+import Geonauts.Entities.Player;
 import Items.PoisonSword;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -27,30 +28,32 @@ public class Launcher extends Application {
         root.getChildren().add(canvas);
 
         // Initialize the game
-        var state = new WorldState();
-        var renderer = new Renderer(state, canvas);
+        var level = new LevelState();
+        var camera = new CameraState();
+        var renderer = new Renderer(level, camera, canvas);
         new InputHandler(renderer);
         new AnimationTimer() {
             @Override
             public void handle(long l) {
+                level.tick();
                 renderer.update();
             }
         }.start();
         // Spawn a player
         var player = new Player();
-        state.grid.getSquare(0,0).addChild(player);
-        state.player = player;
-        var square = state.grid.getSquare(0, 1);
-        state.grid.getSquare(0, 1).addChild(new PoisonSword());
+        level.grid.getSquare(0,0).addChild(player);
+        level.player = player;
+        var square = level.grid.getSquare(0, 1);
+        level.grid.getSquare(0, 1).addChild(new PoisonSword());
         System.out.println("Here");
 
         // Add scroll wheel handler
         canvas.setOnScroll(event -> {
             double deltaY = event.getDeltaY();
             float zoomModifier = (float) (deltaY > 0 ? .10 : -.10);
-            state.cameraZoom += zoomModifier;
-            if(state.cameraZoom <= 0)
-                state.cameraZoom = 0.1f;
+            camera.cameraZoom += zoomModifier;
+            if(camera.cameraZoom <= 0)
+                camera.cameraZoom = 0.1f;
             renderer.update();
         });
 

@@ -1,14 +1,17 @@
 package Geonauts;
 
+import Geonauts.Entities.Entity;
+import javafx.scene.input.KeyCode;
+
 import java.util.ArrayList;
 
-public class GameGrid extends Drawable{
+public class GameGrid extends Drawable implements UIElement.GeoKeyLisener {
     private int sizeX;
     private int sizeY;
     private final ArrayList<ArrayList<GridSquare>> contents = new ArrayList<>();
-    public WorldState state;
+    public LevelState state;
 
-    public GameGrid(int sizeX, int sizeY, WorldState state) {
+    public GameGrid(int sizeX, int sizeY, LevelState state) {
         super(1,1);
         this.sizeX = sizeX;
         this.sizeY = sizeY;
@@ -23,7 +26,7 @@ public class GameGrid extends Drawable{
     }
 
     public GridSquare getSquare(int x, int y){
-        if(x < sizeX || y < sizeY)
+        if(x < 0 || y < 0 || x >= sizeX || y >= sizeY)
             return null;
         return contents.get(x).get(y);
     }
@@ -36,8 +39,9 @@ public class GameGrid extends Drawable{
         return sizeY;
     }
 
-    public boolean move(Entity entity, int x, int y){
-        var target = getSquare(x, y);
+    public boolean move(Entity entity, int dx, int dy){
+        var coords = entity.parent.getCoords();
+        var target = getSquare(coords.get(0) + dx, coords.get(1) + dy);
         if(target == null)
             return false;
         if(target.canEnter(entity)){
@@ -49,4 +53,19 @@ public class GameGrid extends Drawable{
     }
 
 
+    @Override
+    public void onKeyPress(KeyCode keyCode) {
+        switch(keyCode){
+            case KeyCode.W:
+
+        }
+    }
+
+    public Vector2F gridSquareWorldPos(int squareX, int squareY){
+        var out = new Vector2F(squareX, squareY);
+        return out.scaled(state.tileSize);
+    }
+    public Vector2F gridSquareWorldPos(GridSquare g){
+        return gridSquareWorldPos(g.x, g.y);
+    }
 }

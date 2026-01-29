@@ -1,16 +1,20 @@
 package Geonauts;
 
+import Geonauts.Entities.Player;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 
 // This is the UI element associated with the actual gameplay
-public class GamePane extends UIElement{
+public class GamePane extends UIElement implements UIElement.GeoKeyLisener {
 
-    private final WorldState state;
+    private final LevelState level;
+    private final CameraState camera;
 
-    public GamePane(int x, int y, int height, int width, Renderer parent, WorldState state) {
+    public GamePane(int x, int y, int height, int width, Renderer parent, LevelState level, CameraState camera) {
         super(x, y, 0, height, width, parent);
-        this.state = state;
+        this.level = level;
+        this.camera = camera;
     }
 
     @Override
@@ -23,15 +27,15 @@ public class GamePane extends UIElement{
         gc.clip();
 
         // Render the game grid
-        for (int gridX = 0; gridX < state.grid.getSizeX(); gridX++) {
-            for (int gridY = 0; gridY < state.grid.getSizeY(); gridY++) {
+        for (int gridX = 0; gridX < level.grid.getSizeX(); gridX++) {
+            for (int gridY = 0; gridY < level.grid.getSizeY(); gridY++) {
 
-                GridSquare g = state.grid.getSquare(gridX, gridY);
+                GridSquare g = level.grid.getSquare(gridX, gridY);
 
                 // World position for this tile
                 Vector2F tileWorldPos = new Vector2F(
-                        state.tileSize * gridX + state.grid.transform.x,
-                        state.tileSize * gridY + state.grid.transform.y
+                        level.tileSize * gridX + level.grid.transform.x,
+                        level.tileSize * gridY + level.grid.transform.y
                 );
 
                 // Convert to pane-local screen coordinates
@@ -40,13 +44,14 @@ public class GamePane extends UIElement{
                 // Background tile image
                 Image tilePicture = g.background;
 
+                float tileScreenSize = level.tileSize * camera.cameraZoom;
                 if (tilePicture != null) {
                     gc.drawImage(
                             tilePicture,
                             screenPos.x,
                             screenPos.y,
-                            state.tileSize * state.cameraZoom,
-                            state.tileSize * state.cameraZoom
+                            tileScreenSize,
+                            tileScreenSize
                     );
                 }
                 // Render all children of the tile
@@ -56,8 +61,8 @@ public class GamePane extends UIElement{
                                 child.sprite,
                                 screenPos.x,
                                 screenPos.y,
-                                state.tileSize * state.cameraZoom,
-                                state.tileSize * state.cameraZoom
+                                tileScreenSize,
+                                tileScreenSize
                         );
                     }
                 }
@@ -67,24 +72,38 @@ public class GamePane extends UIElement{
         gc.restore();
     }
 
+    @Override
+    public void onKeyPress(KeyCode keyCode) {
+        Player player = level.player;
+        int dx = 0, dy = 0;
+        switch (keyCode) {
+            case W: dy = -1; break;
+            case S: dy = 1;  break;
+            case A: dx = -1; break;
+            case D: dx = 1;  break;
+            default: return;
+        }
+        player.pendingAction = player.new MoveAction(level, dx, dy);
+    }
+
     public Vector2F paneToWorld(Vector2F relCoord) {
         var out = relCoord.clone();
         // Undo pane center offset (relative, so no need to subtract x/y)
         out.x -= width / 2f;
         out.y -= height / 2f;
         // Undo zoom
-        out = out.scaled(1 / state.cameraZoom);
+        out = out.scaled(1 / camera.cameraZoom);
         // Undo camera offset
-        out.x += state.cameraPos.x;
-        out.y += state.cameraPos.y;
+        out.x += camera.cameraPos.x;
+        out.y += camera.cameraPos.y;
         return out;
     }
 
     private Vector2F worldToPane(Vector2F worldCoord) {
         var out = worldCoord.clone();
-        out.x -= state.cameraPos.x;
-        out.y -= state.cameraPos.y;
-        out = out.scaled(state.cameraZoom);
+        out.x -= camera.cameraPos.x;
+        out.y -= camera.cameraPos.y;
+        out = out.scaled(camera.cameraZoom);
         // Offset to pane center instead of canvas center
         out.x += x + width / 2f;
         out.y += y + height / 2f;

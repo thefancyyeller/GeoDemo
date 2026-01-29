@@ -10,14 +10,16 @@ public class Renderer {
     private GamePane gamePane;
     private ScrollableTextBox playerInfo;
 
-    private final WorldState state;
+    private final LevelState level;
+    private final CameraState camera;
     public final Canvas target;
     public ArrayList<UIElement> uiElements = new ArrayList<>();
 
-    public Renderer(WorldState state, Canvas target) {
-        this.state = state;
+    public Renderer(LevelState level, CameraState camera, Canvas target) {
+        this.level = level;
+        this.camera = camera;
         this.target = target;
-        gamePane = new GamePane(0,0,0,0,this, state);
+        gamePane = new GamePane(0,0,0,0,this, level, camera);
         playerInfo = new ScrollableTextBox(0,0, 1, 0,0, this);
         uiElements.add(gamePane);
         uiElements.add(playerInfo);
@@ -25,6 +27,7 @@ public class Renderer {
     }
 
     public void update() {
+        this.camera.cameraPos = level.grid.gridSquareWorldPos(level.player.parent);
         GraphicsContext gc = target.getGraphicsContext2D();
         gc.clearRect(0,0, target.getWidth(), target.getHeight());
         // Resize/adjust the UI
@@ -44,9 +47,9 @@ public class Renderer {
 
     public Vector2F worldToCanvas(Vector2F worldCoord){
         var out = worldCoord.clone();
-        out.x -= state.cameraPos.x;
-        out.y -= state.cameraPos.y;
-        out = out.scaled(state.cameraZoom);
+        out.x -= camera.cameraPos.x;
+        out.y -= camera.cameraPos.y;
+        out = out.scaled(camera.cameraZoom);
         // Adjust to mid screen
         out.x += ((float) target.getWidth())/2;
         out.y += ((float) target.getHeight())/2;
@@ -59,10 +62,10 @@ public class Renderer {
         // Undo camera centering & zoom
         out.x -= ((float) target.getWidth()) / 2f;
         out.y -= ((float) target.getHeight()) / 2f;
-        out = out.scaled(1/state.cameraZoom);
+        out = out.scaled(1/camera.cameraZoom);
         // Undo camera adjustment
-        out.x += state.cameraPos.x;
-        out.y += state.cameraPos.y;
+        out.x += camera.cameraPos.x;
+        out.y += camera.cameraPos.y;
         return out;
     }
 

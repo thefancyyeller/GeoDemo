@@ -1,5 +1,6 @@
 package Geonauts;
 
+import Geonauts.Entities.Entity;
 import javafx.scene.image.Image;
 
 import java.util.*;
@@ -10,8 +11,8 @@ public class GridSquare {
     public final ArrayList<GridItem> children = new ArrayList<>();
     public final ArrayList<Tag> tags = new ArrayList<>();
 
-    private int x;
-    private int y;
+    int x;
+    int y;
 
     public GridSquare(int x, int y, GameGrid parent) {
         this.x = x;
@@ -32,15 +33,14 @@ public class GridSquare {
     public void addChild(GridItem item){
         item.parent = this;
         children.add(item);
-        if(item instanceof Entity)
+        if(item instanceof Entity && !parent.state.entities.contains(item))
             parent.state.entities.add((Entity)item);
     }
 
     public void removeChild(GridItem item){
         item.parent = null;
-        assert(this.children.remove(item));// Make sure the item was in this square to begin with.
-        if(item instanceof Entity)
-            assert(this.parent.state.entities.add((Entity) item));
+        boolean removed = this.children.remove(item);
+        assert removed; // Make sure the item was in this square to begin with.
     }
 
     public Vector2F gameWorldCoords(){
