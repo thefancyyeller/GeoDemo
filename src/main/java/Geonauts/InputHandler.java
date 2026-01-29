@@ -1,6 +1,7 @@
 package Geonauts;
 
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.ScrollEvent;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,12 +22,26 @@ public class InputHandler {
             mouseLoc.x = (int) e.getX();
             mouseLoc.y = (int) e.getY();
         });
+
+        // Dispatch scroll events to UI components before Launcher's camera handler
+        canvas.addEventFilter(ScrollEvent.SCROLL, event -> {
+            var scrollLoc = new Vector2I((int) event.getX(), (int) event.getY());
+            var elms = getAtLocation(scrollLoc);
+            for (var elm : elms) {
+                if (elm instanceof UIElement.GeoScrollListener) {
+                    ((UIElement.GeoScrollListener) elm).onScroll(event.getDeltaY());
+                    event.consume();
+                    return;
+                }
+            }
+        });
+
         // Dispatch OnClicks to appropriate UI Components
         canvas.setOnMouseClicked(e->{
             var clickLoc = new Vector2I((int) e.getX(), (int) e.getY());
             var elms = getAtLocation(clickLoc);
             if(elms.isEmpty())
-                System.out.println("Warning! No ui components present!");
+                System.out.println("Warning! No ui components received mouse click");
             for(var elm : elms) {
                 if(elm instanceof UIElement.GeoClickListener) {
                     // Transform to relative position
@@ -38,7 +53,7 @@ public class InputHandler {
         });
     }
 
-    // Returns the first (highest layered) ui component at a target
+    // Returns ui components at a target in pixel space
     private ArrayList<UIElement> getAtLocation(Vector2I canvasLocation){
         renderer.uiElements.sort(new Comparator<UIElement>() { // Sort by layer
             @Override

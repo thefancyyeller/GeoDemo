@@ -2,14 +2,13 @@ package Geonauts;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-
 import java.util.ArrayList;
 
 
 public class Renderer {
     // Static UI Components
     private GamePane gamePane;
+    private ScrollableTextBox playerInfo;
 
     private final WorldState state;
     public final Canvas target;
@@ -18,56 +17,29 @@ public class Renderer {
     public Renderer(WorldState state, Canvas target) {
         this.state = state;
         this.target = target;
-        gamePane = new GamePane(0,0,0,0,this);
+        gamePane = new GamePane(0,0,0,0,this, state);
+        playerInfo = new ScrollableTextBox(0,0, 1, 0,0, this);
+        uiElements.add(gamePane);
+        uiElements.add(playerInfo);
+        playerInfo.addLine("This is the first line");
     }
 
     public void update() {
         GraphicsContext gc = target.getGraphicsContext2D();
         gc.clearRect(0,0, target.getWidth(), target.getHeight());
         // Resize/adjust the UI
+        gamePane.height = Math.floorDiv((int) target.getHeight(), 3) * 2;
+        gamePane.width = Math.floorDiv((int) target.getWidth(), 3) * 2;
+        playerInfo.x = gamePane.width;
+        playerInfo.y = 0;
+        playerInfo.width = Math.floorDiv((int) target.getWidth(), 3);
+        playerInfo.height = (int) target.getHeight();
 
-        // Render the game
-        for (int gridX = 0; gridX < state.grid.getSizeX(); gridX++) {
-            for (int gridY = 0; gridY < state.grid.getSizeY(); gridY++) {
-
-                GridSquare g = state.grid.getSquare(gridX, gridY);
-
-                // World position for this tile
-                Vector2F tileWorldPos = new Vector2F(
-                        state.tileSize * gridX + state.grid.transform.x,
-                        state.tileSize * gridY + state.grid.transform.y
-                );
-
-                // Convert to screen pixel coordinates
-                Vector2F screenPos = this.worldToCanvas(tileWorldPos);
-
-                // Background tile image
-                Image tilePicture = g.background;
-
-                if (tilePicture != null) {
-                    gc.drawImage(
-                            tilePicture,
-                            screenPos.x,
-                            screenPos.y,
-                            state.tileSize * state.cameraZoom,
-                            state.tileSize* state.cameraZoom
-                    );
-                }
-                // Render all children of the tile
-                for(GridItem child : g.children){
-                    if(child.sprite != null){
-                        gc.drawImage(
-                                child.sprite,
-                                screenPos.x,
-                                screenPos.y,
-                                state.tileSize * state.cameraZoom,
-                                state.tileSize* state.cameraZoom
-                        );
-                    }
-                }
-            }
-        }
         // Render the UI
+        uiElements.sort((a, b) -> a.layer - b.layer);
+        for (UIElement elm : uiElements) {
+            elm.render(gc);
+        }
     }
 
     public Vector2F worldToCanvas(Vector2F worldCoord){

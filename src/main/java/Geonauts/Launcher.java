@@ -29,6 +29,7 @@ public class Launcher extends Application {
         // Initialize the game
         var state = new WorldState();
         var renderer = new Renderer(state, canvas);
+        new InputHandler(renderer);
         new AnimationTimer() {
             @Override
             public void handle(long l) {
