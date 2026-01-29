@@ -20,4 +20,7 @@ public abstract class UIElement {
     public interface GeoScrollListener{
         public abstract void onScroll();
     }
+    public interface GeoClickListener{
+        public abstract void onClick(Vector2I relPixelCoords);
+    }
 }
